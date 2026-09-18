@@ -1,0 +1,179 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #FAF9F6;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F3F1EC;
+  --text-primary: #0F1014;
+  --text-secondary: #4F505E;
+  --text-muted: #888898;
+  --border-color: rgba(15, 16, 20, 0.08);
+  --border-strong: rgba(15, 16, 20, 0.22);
+  --accent-gold: #8C6A3B;
+  --accent-dark: #0F1014;
+  --badge-bg: rgba(15, 16, 20, 0.04);
+  --badge-text: #0F1014;
+  --glow-color: rgba(140, 106, 59, 0.12);
+}
+
+.dark {
+  --bg-primary: #0A0B0E;
+  --bg-card: #12131A;
+  --bg-card-hover: #191B24;
+  --text-primary: #F4F4F6;
+  --text-secondary: #A0A0B2;
+  --text-muted: #646476;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.2);
+  --accent-gold: #E5C59E;
+  --accent-dark: #F4F4F6;
+  --badge-bg: rgba(255, 255, 255, 0.05);
+  --badge-text: #E5C59E;
+  --glow-color: rgba(229, 197, 158, 0.12);
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+}
+
+/* Anchor offset so fixed navbar doesn't occlude jump targets */
+[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+.font-sans-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.font-mono-code {
+  font-family: 'Space Mono', monospace;
+}
+
+/* Glassmorphism & Agency Cards */
+.glass-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(16px);
+  border-radius: 1rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: 0 16px 36px -12px var(--glow-color);
+}
+
+.btn-agency-primary {
+  background-color: var(--accent-dark);
+  color: var(--bg-primary);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.8rem 1.6rem;
+  border-radius: 9999px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-agency-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px var(--glow-color);
+}
+
+.btn-agency-secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.8rem 1.6rem;
+  border-radius: 9999px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-agency-secondary:hover {
+  border-color: var(--text-primary);
+  background-color: var(--bg-card-hover);
+  transform: translateY(-2px);
+}
+
+.badge-glass {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background-color: var(--badge-bg);
+  color: var(--badge-text);
+  border: 1px solid var(--border-color);
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+}
+
+/* Dot-grid ambient background — large screens only */
+@media (min-width: 1024px) {
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, var(--border-color) 1px, transparent 1px);
+    background-size: 32px 32px;
+    opacity: 0.55;
+  }
+}
+
+/* Smooth section entrance — applied via JS intersection observer or just always-on */
+.section-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.section-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Infinite marquee for testimonials */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee 32s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
