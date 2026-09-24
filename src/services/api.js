@@ -1,11 +1,18 @@
 import axios from 'axios';
 
 const configuredApiUrl = import.meta.env.VITE_API_URL?.trim();
-const API_BASE_URL = configuredApiUrl
-  ? configuredApiUrl.startsWith('/') || configuredApiUrl.includes('://')
+const API_BASE_URL = (() => {
+  if (!configuredApiUrl) return '/api';
+
+  const withProtocol = configuredApiUrl.startsWith('/') || configuredApiUrl.includes('://')
     ? configuredApiUrl
-    : `https://${configuredApiUrl}`
-  : '/api';
+    : `https://${configuredApiUrl}`;
+  const normalized = withProtocol.replace(/\/$/, '');
+
+  return normalized === '/api' || normalized.endsWith('/api')
+    ? normalized
+    : `${normalized}/api`;
+})();
 
 const API = axios.create({
   baseURL: API_BASE_URL,
