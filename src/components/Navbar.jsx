@@ -13,10 +13,10 @@ export default function Navbar({ isDark, setIsDark }) {
   const { profile } = useProfile();
 
   return (
-    <header className="fixed top-4 inset-x-0 z-50 pointer-events-none px-4 sm:px-6 lg:px-8">
+    <header className="fixed top-2 sm:top-4 inset-x-0 z-50 pointer-events-none px-3 sm:px-6 lg:px-8">
 
       {/* Desktop pill nav — full max-w-7xl matches all section containers */}
-      <div className="pointer-events-auto max-w-7xl mx-auto bg-[var(--bg-card)]/90 backdrop-blur-xl rounded-full border border-[var(--border-color)] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] h-14 px-5 sm:px-6 flex items-center justify-between transition-colors duration-300">
+      <div className="pointer-events-auto max-w-7xl mx-auto bg-[var(--bg-card)]/90 backdrop-blur-xl rounded-full border border-[var(--border-color)] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] h-13 sm:h-14 px-3 sm:px-6 flex items-center justify-between transition-colors duration-300">
 
         {/* Left: Monogram Mark & Tight Identity Lockup */}
         <a href="#" className="flex items-center gap-3 group shrink-0">

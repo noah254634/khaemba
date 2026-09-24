@@ -63,12 +63,12 @@ export default function DecisionExplorer() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Left Column: Decision Selector Tabs */}
-          <div className="lg:col-span-5 space-y-3 xl:space-y-4">
+          <div className="mobile-scroll-rail lg:col-span-5 flex lg:block gap-3 xl:space-y-4">
             {featuredDecisions.map((dec, idx) => (
               <button
                 key={idx}
                 onClick={() => setActiveIndex(idx)}
-                className={`w-full text-left p-5 sm:p-6 rounded-2xl glass-card transition-all duration-300 flex flex-col justify-between ${
+                className={`w-[min(82vw,340px)] lg:w-full shrink-0 text-left p-5 sm:p-6 rounded-2xl glass-card transition-all duration-300 flex flex-col justify-between ${
                   activeIndex === idx
                     ? 'border-[var(--accent-gold)] shadow-lg'
                     : 'border-[var(--border-color)] opacity-70 hover:opacity-100'

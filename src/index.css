@@ -39,6 +39,8 @@ body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
   overflow-x: hidden;
+  overscroll-behavior-x: none;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Anchor offset so fixed navbar doesn't occlude jump targets */
@@ -173,6 +175,83 @@ body {
 
 .marquee-track:hover {
   animation-play-state: paused;
+}
+
+.recommendations-rail {
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+}
+
+.recommendations-rail::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    overscroll-behavior-y: none;
+  }
+
+  body {
+    min-width: 320px;
+    overscroll-behavior-y: none;
+  }
+
+  button,
+  a,
+  input,
+  textarea {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button,
+  a {
+    touch-action: manipulation;
+  }
+
+  .mobile-scroll-rail {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x;
+  }
+
+  .mobile-scroll-rail::-webkit-scrollbar {
+    display: none;
+  }
+
+  section {
+    scroll-margin-top: 4.5rem;
+  }
+
+  .section-reveal {
+    transform: translateY(12px);
+    transition-duration: 0.4s;
+  }
+
+  .marquee-track {
+    animation: none;
+  }
+
+  .marquee-track > * {
+    width: min(84vw, 360px);
+    scroll-snap-align: start;
+  }
+
+  .recommendations-rail {
+    scroll-snap-type: x mandatory;
+  }
+
+  /* Keep the layout stable while mobile browsers reveal their toolbars. */
+  @supports (min-height: 100svh) {
+    .min-h-screen {
+      min-height: 100svh;
+    }
+  }
 }
 
 /* Custom Scrollbar */

@@ -82,15 +82,15 @@ export default function Testimonials() {
             <span className="badge-glass mb-3 inline-block">// ENDORSEMENTS</span>
             <h2 className="font-sans-title text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-[var(--text-primary)]">Client &amp; Peer Endorsements</h2>
           </div>
-          <p className="text-[var(--text-secondary)] font-normal max-w-xs text-sm leading-relaxed shrink-0">Hover the strip to pause.</p>
+          <p className="text-[var(--text-secondary)] font-normal max-w-xs text-sm leading-relaxed shrink-0">Swipe through the recommendations.</p>
         </div>
       </div>
 
       <div className="relative">
         <div className="absolute left-0 top-0 bottom-0 w-24 sm:w-40 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right, var(--bg-primary) 0%, transparent 100%)' }} />
         <div className="absolute right-0 top-0 bottom-0 w-24 sm:w-40 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left, var(--bg-primary) 0%, transparent 100%)' }} />
-        <div className="flex overflow-hidden">
-          <div className="marquee-track flex gap-6 w-max">
+        <div className="recommendations-rail flex overflow-x-auto overscroll-x-contain px-4 sm:px-6 lg:px-8 pb-3 sm:pb-0">
+          <div className="marquee-track flex gap-4 sm:gap-6 w-max">
             {doubledTestimonials.map((testimonial, index) => <TestimonialCard key={`${testimonial._id}-${index}`} testimonial={testimonial} />)}
           </div>
         </div>

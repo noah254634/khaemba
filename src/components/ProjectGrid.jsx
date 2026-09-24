@@ -62,12 +62,12 @@ export default function ProjectGrid({ onSelectProject }) {
         </div>
 
         {/* Category Filter Bar */}
-        <div className="flex flex-wrap gap-2 mb-12 pb-4 border-b border-[var(--border-color)]">
+        <div className="mobile-scroll-rail flex flex-nowrap sm:flex-wrap gap-2 mb-10 sm:mb-12 pb-4 border-b border-[var(--border-color)]">
           {categories.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              className={`px-4 py-2 font-mono-code text-xs uppercase tracking-wider rounded-full transition-all duration-300 border ${
+              className={`shrink-0 min-h-11 px-4 py-2 font-mono-code text-xs uppercase tracking-wider rounded-full transition-all duration-300 border ${
                 activeCategory === cat.id
                   ? 'bg-[var(--accent-dark)] text-[var(--bg-primary)] border-[var(--accent-dark)] font-bold shadow-md'
                   : 'bg-[var(--badge-bg)] text-[var(--text-secondary)] border-[var(--border-color)] hover:border-[var(--accent-gold)] hover:text-[var(--text-primary)]'
