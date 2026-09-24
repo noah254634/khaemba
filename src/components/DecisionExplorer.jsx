@@ -1,46 +1,43 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Cpu, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { fetchProjectDecisions, fetchProjects } from '../services/api';
 
 export default function DecisionExplorer() {
-  const featuredDecisions = [
-    {
-      project: 'VeraPay — Multi-rail Payment Gateway',
-      question: 'Why maintain an internal ledger instead of relying on payment provider records?',
-      decision: 'Double-entry accounting ledger committed in PostgreSQL before calling payment rails',
-      reasoning:
-        'Payment providers drop webhooks, deliver duplicate callbacks, or fail during provider outages. An internal ledger guarantees mathematical audit balance (debits == credits) and acts as the single source of truth for reconciliation without depending on third-party provider availability.',
-      tradeoffs: [
-        'Adds ~4ms write latency per payment transaction',
-        'Requires idempotency key verification in Redis',
-        'Complex schema migrations across multi-currency models',
-      ],
-    },
-    {
-      project: 'HaptiCare — Edge Health Wearable',
-      question: 'Why run inference on-device instead of sending raw sensor data to the cloud?',
-      decision: 'Edge inference with INT8 TensorFlow Lite on ESP32-S3 microcontroller',
-      reasoning:
-        'Rural East African clinical settings frequently lack stable cellular data. On-device inference guarantees <12ms latency, continuous operation during complete network blackout, and 72-hour battery life on a 400mAh battery.',
-      tradeoffs: [
-        'Model constrained to 84KB memory footprint',
-        '1.3% precision drop from INT8 post-training quantisation',
-        'Firmware updates require OTA distribution',
-      ],
-    },
-    {
-      project: 'Distributed Event Stream Processor',
-      question: 'Why select Apache Flink over Apache Spark Streaming for stateful processing?',
-      decision: 'Apache Flink with native exactly-once checkpointing to RocksDB/S3',
-      reasoning:
-        'Spark Streaming relies on micro-batching which introduces batch interval latency floor. Flink is a true event-driven streaming runtime processing events individually as they arrive, yielding sub-100ms P99 latency for financial telemetry pipelines.',
-      tradeoffs: [
-        'Steeper operational learning curve than Spark',
-        'RocksDB state backend requires dedicated memory tuning',
-      ],
-    },
-  ];
-
   const [activeIndex, setActiveIndex] = useState(0);
+  const [featuredDecisions, setFeaturedDecisions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const loadDecisions = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+      const projects = await fetchProjects();
+      const decisionGroups = await Promise.all(projects.map(async (project) => {
+        const decisions = await fetchProjectDecisions(project.slug);
+        return decisions.map((decision) => ({ ...decision, project: project.title }));
+      }));
+      setFeaturedDecisions(decisionGroups.flat());
+      } catch (requestError) {
+        console.error('Error fetching decisions:', requestError);
+        setError('Decision records could not be loaded right now.');
+      } finally {
+        setLoading(false);
+      }
+  };
+
+  useEffect(() => { loadDecisions(); }, []);
+
+  if (loading || error || !featuredDecisions.length) {
+    return (
+      <section id="decisions" className="py-20 sm:py-28 lg:py-36 border-b border-[var(--border-color)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          {loading ? <div className="h-32 rounded-2xl bg-[var(--badge-bg)] animate-pulse" /> : <><p className="text-sm text-[var(--text-secondary)]">{error || 'No decision records are available yet.'}</p>{error && <button type="button" onClick={loadDecisions} className="btn-agency-secondary mt-5">Try Again</button>}</>}
+        </div>
+      </section>
+    );
+  }
+
   const active = featuredDecisions[activeIndex];
 
   return (

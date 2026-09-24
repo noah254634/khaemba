@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { Sun, Moon, Menu, X } from 'lucide-react';
+import { useProfile } from '../context/ProfileContext';
 
 const NAV_LINKS = [
   { href: '#work',         label: 'Selected Work' },
-  { href: '#capabilities', label: 'Capabilities'   },
   { href: '#decisions',    label: 'Rationale'      },
   { href: '#contact',      label: 'Contact'        },
 ];
 
 export default function Navbar({ isDark, setIsDark }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { profile } = useProfile();
 
   return (
     <header className="fixed top-4 inset-x-0 z-50 pointer-events-none px-4 sm:px-6 lg:px-8">
@@ -23,11 +24,11 @@ export default function Navbar({ isDark, setIsDark }) {
             NK
           </div>
           <div className="flex flex-col">
-            <span className="text-xs font-semibold tracking-tight text-[var(--text-primary)]">
-              Noah Khaemba
+            <span className="max-w-[120px] truncate text-xs font-semibold tracking-tight text-[var(--text-primary)]">
+              {profile?.fullName}
             </span>
-            <span className="text-[10px] font-mono-code uppercase tracking-widest text-[var(--text-muted)]">
-              SYSTEMS ARCHITECT
+            <span className="max-w-[140px] truncate text-[10px] font-mono-code uppercase tracking-widest text-[var(--text-muted)]">
+              {profile?.title}
             </span>
           </div>
         </a>
@@ -45,15 +46,8 @@ export default function Navbar({ isDark, setIsDark }) {
           ))}
         </nav>
 
-        {/* Right: Availability pill + theme toggle + mobile hamburger */}
+        {/* Right: theme toggle + mobile hamburger */}
         <div className="flex items-center gap-2.5 shrink-0">
-
-          {/* Availability Status Pill */}
-          <span className="text-[10px] font-mono-code uppercase tracking-widest text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20 flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="hidden sm:inline">AVAILABLE</span>
-          </span>
-
           {/* Theme Toggle */}
           <button
             onClick={() => setIsDark(!isDark)}

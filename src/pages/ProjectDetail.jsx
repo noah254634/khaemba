@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import ParticleCanvas from '../components/ParticleCanvas';
+import Seo from '../components/Seo';
 import { fetchProjectBySlug, fetchProjectDecisions, fetchProjectImages, fetchProjects } from '../services/api';
 import {
   ArrowLeft, ExternalLink, GitBranch, Cpu,
@@ -110,6 +111,24 @@ export default function ProjectDetail() {
 
   return (
     <div className="min-h-screen relative bg-[var(--bg-primary)] text-[var(--text-primary)] selection:bg-[var(--accent-gold)] selection:text-[var(--bg-primary)] transition-colors duration-300">
+      <Seo
+        title={project.title}
+        description={project.description}
+        type="article"
+        image={project.heroImage || svgPath}
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'Article',
+          headline: project.title,
+          description: project.description,
+          url: window.location.href,
+          image: project.heroImage || svgPath,
+          author: {
+            '@type': 'Person',
+            name: 'Noah Khaemba',
+          },
+        }}
+      />
       <ParticleCanvas isDark={isDark} />
 
       <div className="relative z-10">
@@ -351,24 +370,19 @@ export default function ProjectDetail() {
           )}
 
           {/* Structured Architectural Sections */}
-          {project.sections && project.sections.length > 0 && (
+          {project.sections && project.sections.filter((section) => section.type !== 'OVERVIEW').length > 0 && (
             <div className="space-y-8 pt-8">
               <h2 className="font-mono-code text-xs font-bold uppercase tracking-widest text-[var(--accent-gold)]">
                 // ARCHITECTURAL BLUEPRINT SPECIFICATION
               </h2>
               <div className="grid grid-cols-1 gap-8">
-                {project.sections.map((sec, idx) => (
+                {project.sections.filter((section) => section.type !== 'OVERVIEW').map((sec, idx) => (
                   <div key={idx} className="glass-card p-8 rounded-3xl border border-[var(--border-color)] space-y-4">
-                    <div className="flex items-center gap-3">
-                      <span className="font-mono-code text-xs font-bold px-3 py-1 rounded-full bg-[var(--accent-dark)] text-[var(--bg-primary)] uppercase">
-                        {sec.type}
-                      </span>
-                      {sec.title && (
-                        <h3 className="font-sans-title text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
-                          {sec.title}
-                        </h3>
-                      )}
-                    </div>
+                    {sec.title && (
+                      <h3 className="font-sans-title text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
+                        {sec.title}
+                      </h3>
+                    )}
                     <p className="text-base sm:text-lg text-[var(--text-secondary)] font-light leading-relaxed whitespace-pre-line">
                       {sec.content}
                     </p>

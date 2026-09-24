@@ -1,30 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { Download, ArrowUpRight, Cpu, Layers } from 'lucide-react';
-import { fetchProfile } from '../services/api';
+import React from 'react';
+import { Download, ArrowUpRight, Layers } from 'lucide-react';
+import { useProfile } from '../context/ProfileContext';
 
 export default function Hero() {
-  const [profile, setProfile] = useState(null);
+  const { profile, loading, error, retry } = useProfile();
 
-  useEffect(() => {
-    let isMounted = true;
-    fetchProfile().then((data) => {
-      if (isMounted && data) {
-        setProfile(data);
-      }
-    });
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  if (loading) {
+    return <section className="relative pt-24 sm:pt-32 md:pt-40 lg:pt-44 pb-16 md:pb-24 lg:pb-32 border-b border-[var(--border-color)]"><div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center animate-pulse"><div className="lg:col-span-7 space-y-6"><div className="h-6 w-40 rounded-full bg-[var(--badge-bg)]" /><div className="h-24 max-w-2xl rounded-xl bg-[var(--badge-bg)]" /><div className="h-16 max-w-xl rounded-xl bg-[var(--badge-bg)]" /><div className="h-12 w-44 rounded-full bg-[var(--badge-bg)]" /></div><div className="lg:col-span-5 aspect-[4/5] rounded-2xl bg-[var(--badge-bg)]" /></div></div></section>;
+  }
 
-  const fullName = profile?.fullName || 'Noah Khaemba';
-  const title = profile?.title || 'Principal Systems & Ledger Architect';
-  const headline = profile?.headline || 'Architecting resilient backends & data-driven platforms.';
-  const bio = profile?.bio || 'Specialising in high-throughput payment rails, edge AI inference, and distributed event streaming topologies designed for fault tolerance and sub-100ms SLAs.';
-  const availability = profile?.availability || 'Available · Nairobi (UTC+3)';
-  const techStackTag = profile?.techStackTag || 'Go / Kafka / C++';
-  const avatarUrl = profile?.avatarUrl || '/noah_portrait.png';
-  const cvUrl = profile?.cvUrl || '/api/cv';
+  if (error || !profile) {
+    return <section className="relative pt-32 pb-24 border-b border-[var(--border-color)]"><div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="max-w-xl space-y-4"><p className="font-mono-code text-xs uppercase tracking-widest text-[var(--text-muted)]">Profile unavailable</p><h1 className="font-sans-title text-3xl sm:text-5xl text-[var(--text-primary)]">The profile could not be loaded.</h1><button type="button" onClick={retry} className="btn-agency-secondary">Try again</button></div></div></section>;
+  }
+
+  const { fullName, title, headline, bio, availability, techStackTag, avatarUrl, cvUrl } = profile;
 
   // Parse tech stack tag string (e.g. "Go / Kafka / C++ / Rust") into list of clean pills
   const techList = techStackTag
@@ -32,7 +21,7 @@ export default function Hero() {
         .split(/[\/,|]/)
         .map((s) => s.trim())
         .filter(Boolean)
-    : ['Go', 'Kafka', 'C++'];
+    : [];
 
   return (
     <section className="relative pt-24 sm:pt-32 md:pt-40 lg:pt-44 pb-16 md:pb-24 lg:pb-32 overflow-hidden border-b border-[var(--border-color)]">
@@ -97,18 +86,6 @@ export default function Hero() {
                   className="w-full h-full object-cover object-top grayscale contrast-105 group-hover:scale-[1.02] transition-transform duration-500"
                 />
                 
-                {/* Floating Glass Spec Pill Overlay */}
-                <div className="absolute top-3 left-3 right-3 sm:top-4 sm:left-4 sm:right-4 bg-[var(--bg-card)]/90 backdrop-blur-md p-2.5 sm:p-3 rounded-xl border border-[var(--border-color)] flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <Cpu className="w-4 h-4 text-[var(--accent-gold)] shrink-0" />
-                    <span className="font-mono-code text-[10px] sm:text-[11px] font-bold text-[var(--text-primary)] truncate">
-                      SYSTEM ARCHITECTURE v4.2
-                    </span>
-                  </div>
-                  <span className="font-mono-code text-[10px] text-emerald-500 font-semibold shrink-0">
-                    ACTIVE
-                  </span>
-                </div>
               </div>
 
               {/* Bottom Caption Metadata (Responsive Layout for Multiple Languages & Small Devices) */}

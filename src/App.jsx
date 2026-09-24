@@ -4,19 +4,28 @@ import ParticleCanvas from './components/ParticleCanvas';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import ProjectGrid from './components/ProjectGrid';
-import ServicesIndex from './components/ServicesIndex';
 import DecisionExplorer from './components/DecisionExplorer';
 import TechnicalBenchmarks from './components/TechnicalBenchmarks';
-import EstimatorWidget from './components/EstimatorWidget';
 import Testimonials from './components/Testimonials';
+import EstimatorWidget from './components/EstimatorWidget';
 import Footer from './components/Footer';
 import ProjectDetail from './pages/ProjectDetail';
+import { ProfileProvider } from './context/ProfileContext';
+import Seo, { DEFAULT_DESCRIPTION } from './components/Seo';
+import { useProfile } from './context/ProfileContext';
 
 function HomePage({ isDark, setIsDark }) {
+  const { profile } = useProfile();
+
   // Scroll-reveal: animate sections in as they enter the viewport
   useEffect(() => {
     const sections = document.querySelectorAll('section');
     sections.forEach((el) => el.classList.add('section-reveal'));
+
+    if (!('IntersectionObserver' in window)) {
+      sections.forEach((el) => el.classList.add('visible'));
+      return () => {};
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -36,6 +45,20 @@ function HomePage({ isDark, setIsDark }) {
 
   return (
     <div className="min-h-screen relative bg-[var(--bg-primary)] text-[var(--text-primary)] selection:bg-[var(--accent-gold)] selection:text-[var(--bg-primary)] transition-colors duration-300">
+      <Seo
+        title={profile?.title || 'Systems Engineer'}
+        description={profile?.bio || DEFAULT_DESCRIPTION}
+        image={profile?.avatarUrl}
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'Person',
+          name: profile?.fullName || 'Noah Khaemba',
+          jobTitle: profile?.title || 'Systems Engineer',
+          description: profile?.bio || DEFAULT_DESCRIPTION,
+          url: window.location.origin,
+          image: profile?.avatarUrl,
+        }}
+      />
       <ParticleCanvas isDark={isDark} />
 
       <div className="relative z-10">
@@ -44,7 +67,6 @@ function HomePage({ isDark, setIsDark }) {
         <main>
           <Hero />
           <ProjectGrid />
-          <ServicesIndex />
           <DecisionExplorer />
           <TechnicalBenchmarks />
           <Testimonials />
@@ -75,10 +97,12 @@ export default function App() {
   }, [isDark]);
 
   return (
-    <Routes>
-      <Route path="/" element={<HomePage isDark={isDark} setIsDark={setIsDark} />} />
-      <Route path="/projects/:slug" element={<ProjectDetail />} />
-      <Route path="*" element={<HomePage isDark={isDark} setIsDark={setIsDark} />} />
-    </Routes>
+    <ProfileProvider>
+      <Routes>
+        <Route path="/" element={<HomePage isDark={isDark} setIsDark={setIsDark} />} />
+        <Route path="/projects/:slug" element={<ProjectDetail />} />
+        <Route path="*" element={<HomePage isDark={isDark} setIsDark={setIsDark} />} />
+      </Routes>
+    </ProfileProvider>
   );
 }

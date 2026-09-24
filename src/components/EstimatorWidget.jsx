@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { submitContactForm } from '../services/api';
 import { Send, CheckCircle2, AlertCircle, Copy, Check, Mail, GitBranch, Globe } from 'lucide-react';
+import { useProfile } from '../context/ProfileContext';
 
 export default function EstimatorWidget() {
   const [formData, setFormData] = useState({
@@ -10,10 +11,11 @@ export default function EstimatorWidget() {
   });
   const [copied, setCopied] = useState(false);
   const [status, setStatus] = useState({ loading: false, success: false, error: null });
-
-  const emailAddress = 'noahkhaemba290@gmail.com';
+  const { profile } = useProfile();
+  const emailAddress = profile?.email;
 
   const handleCopyEmail = () => {
+    if (!emailAddress || !navigator.clipboard) return;
     navigator.clipboard.writeText(emailAddress);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -79,6 +81,7 @@ export default function EstimatorWidget() {
                 <button
                   type="button"
                   onClick={handleCopyEmail}
+                  disabled={!emailAddress}
                   className="ml-auto p-1.5 rounded-lg border border-[var(--border-color)] hover:border-[var(--accent-gold)] text-[var(--text-primary)] transition-colors shrink-0"
                   aria-label="Copy email"
                 >
@@ -94,7 +97,7 @@ export default function EstimatorWidget() {
               </span>
               
               <a
-                href="https://github.com/noah254634"
+                href={profile?.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-between p-3.5 rounded-xl border border-[var(--border-color)] bg-[var(--badge-bg)] text-xs font-mono-code font-bold text-[var(--text-primary)] hover:border-[var(--accent-gold)] transition-colors"
@@ -107,7 +110,7 @@ export default function EstimatorWidget() {
               </a>
 
               <a
-                href="https://www.linkedin.com/in/noah-khaemba/"
+                href={profile?.linkedinUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-between p-3.5 rounded-xl border border-[var(--border-color)] bg-[var(--badge-bg)] text-xs font-mono-code font-bold text-[var(--text-primary)] hover:border-[var(--accent-gold)] transition-colors"

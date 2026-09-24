@@ -14,23 +14,27 @@ export default function ProjectGrid({ onSelectProject }) {
   const [projects, setProjects] = useState([]);
   const [activeCategory, setActiveCategory] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    async function loadProjects() {
+  const loadProjects = async () => {
       setLoading(true);
-      const data = await fetchProjects();
-      setProjects(data);
-      setLoading(false);
-    }
-    loadProjects();
-  }, []);
+      setError(null);
+      try {
+        setProjects(await fetchProjects());
+      } catch (requestError) {
+        console.error('Error fetching projects:', requestError);
+        setError('Projects could not be loaded right now.');
+      } finally {
+        setLoading(false);
+      }
+  };
+
+  useEffect(() => { loadProjects(); }, []);
 
   const categories = [
     { id: 'all', label: 'All Work' },
-    { id: 'payments', label: 'Payments & Ledger' },
-    { id: 'data', label: 'Data Engineering' },
-    { id: 'infra', label: 'Infrastructure & K8s' },
-    { id: 'ml', label: 'Edge AI & Embedded' },
+    ...Array.from(new Set(projects.map((project) => project.category).filter(Boolean)))
+      .map((category) => ({ id: category, label: category.replace(/\b\w/g, (letter) => letter.toUpperCase()) })),
   ];
 
   const filteredProjects = activeCategory === 'all'
@@ -80,6 +84,15 @@ export default function ProjectGrid({ onSelectProject }) {
             {[1, 2].map((n) => (
               <div key={n} className="h-96 rounded-[28px] glass-card animate-pulse" />
             ))}
+          </div>
+        ) : error ? (
+          <div className="glass-card p-10 text-center">
+            <p className="text-sm text-[var(--text-secondary)]">{error}</p>
+            <button type="button" onClick={loadProjects} className="btn-agency-secondary mt-5">Try Again</button>
+          </div>
+        ) : filteredProjects.length === 0 ? (
+          <div className="glass-card p-10 text-center">
+            <p className="text-sm text-[var(--text-secondary)]">No projects are available in this archive yet.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 sm:gap-10 xl:gap-10">
@@ -142,7 +155,7 @@ export default function ProjectGrid({ onSelectProject }) {
                     {/* Tracked-Out Monospace Metadata Header: COMMISSION ... 2026 */}
                     <div className="flex items-center justify-between font-mono-code text-xs text-[var(--text-muted)] uppercase tracking-widest font-semibold">
                       <span>COMMISSION / {project.category}</span>
-                      <span>2026</span>
+                      <span>{project.createdAt ? new Date(project.createdAt).getFullYear() : ''}</span>
                     </div>
 
                     {/* Project Title */}
@@ -186,7 +199,7 @@ export default function ProjectGrid({ onSelectProject }) {
         )}
 
         {/* Full Archive Button */}
-        <div className="mt-12 sm:mt-16 text-center">
+        {projects.length > 0 && <div className="mt-12 sm:mt-16 text-center">
           <button
             onClick={() => setActiveCategory('all')}
             className="btn-agency-secondary inline-flex items-center gap-2"
@@ -194,7 +207,7 @@ export default function ProjectGrid({ onSelectProject }) {
             <span>EXPLORE FULL ARCHIVE ({projects.length})</span>
             <ArrowUpRight className="w-4 h-4 text-[var(--accent-gold)]" />
           </button>
-        </div>
+        </div>}
 
       </div>
     </section>

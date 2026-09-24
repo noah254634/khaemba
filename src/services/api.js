@@ -8,18 +8,13 @@ const API = axios.create({
 });
 
 export const fetchProjects = async (category = '') => {
-  try {
-    const response = await API.get('/projects');
-    const rawData = response.data?.data || response.data || [];
-    const data = rawData.filter(p => p.status !== 'ARCHIVED');
-    if (category && category !== 'all') {
-      return data.filter(p => p.category === category);
-    }
-    return data;
-  } catch (err) {
-    console.error('Error fetching projects:', err);
-    return [];
+  const response = await API.get('/projects');
+  const rawData = response.data?.data || response.data || [];
+  const data = rawData.filter(p => p.status !== 'ARCHIVED');
+  if (category && category !== 'all') {
+    return data.filter(p => p.category === category);
   }
+  return data;
 };
 
 export const fetchProjectBySlug = async (slug) => {
@@ -33,13 +28,8 @@ export const fetchProjectBySlug = async (slug) => {
 };
 
 export const fetchProjectDecisions = async (slug) => {
-  try {
-    const response = await API.get(`/projects/${slug}/decisions`);
-    return response.data?.data || response.data || [];
-  } catch (err) {
-    console.error(`Error fetching decisions for ${slug}:`, err);
-    return [];
-  }
+  const response = await API.get(`/projects/${slug}/decisions`);
+  return response.data?.data || response.data || [];
 };
 
 export const fetchProjectImages = async (slug) => {
@@ -82,12 +72,12 @@ export const fetchHealthStatus = async () => {
 };
 
 export const fetchProfile = async () => {
-  try {
-    const response = await API.get('/profile');
-    return response.data?.data || response.data || null;
-  } catch (err) {
-    console.error('Error fetching profile:', err);
-    return null;
-  }
+  const response = await API.get('/profile');
+  return response.data?.data || response.data || null;
+};
+
+export const fetchTestimonials = async () => {
+  const response = await API.get('/testimonials');
+  return response.data?.data || response.data || [];
 };
 

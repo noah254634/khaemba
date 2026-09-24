@@ -1,17 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { fetchHealthStatus } from '../services/api';
+import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
+import { useProfile } from '../context/ProfileContext';
 
 export default function Footer() {
-  const [health, setHealth] = useState({ status: 'CHECKING' });
-
-  useEffect(() => {
-    async function checkHealth() {
-      const res = await fetchHealthStatus();
-      setHealth(res);
-    }
-    checkHealth();
-  }, []);
+  const { profile } = useProfile();
 
   return (
     <footer className="bg-[var(--bg-primary)] border-t border-[var(--border-color)] pt-16 lg:pt-24 xl:pt-32 pb-12 transition-colors duration-300">
@@ -27,24 +19,14 @@ export default function Footer() {
                 NK
               </div>
               <span className="font-mono-code text-xs font-bold text-[var(--text-primary)] tracking-widest uppercase">
-                NOAH KHAEMBA
+                {profile?.fullName}
               </span>
             </div>
 
             <p className="text-sm text-[var(--text-secondary)] font-normal leading-relaxed max-w-sm">
-              Principal Systems Architect. Specialising in idempotent payment rails, real-time streaming topologies, and edge AI micro-inference.
+              {profile?.bio}
             </p>
 
-            {/* Live System Health Indicator */}
-            <div className="pt-1 flex items-center gap-2.5">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${health.status === 'OK' ? 'bg-emerald-400' : 'bg-amber-400'}`}></span>
-                <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${health.status === 'OK' ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
-              </span>
-              <span className="font-mono-code text-xs font-bold text-[var(--text-primary)] uppercase tracking-widest">
-                API SYSTEMS {health.status === 'OK' ? 'OPERATIONAL' : 'DEGRADED'}
-              </span>
-            </div>
           </div>
 
           {/* Sitemap (Column 1 on mobile) */}
@@ -56,11 +38,6 @@ export default function Footer() {
               <li>
                 <a href="#work" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
                   Selected Work
-                </a>
-              </li>
-              <li>
-                <a href="#capabilities" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
-                  Capabilities
                 </a>
               </li>
               <li>
@@ -84,7 +61,7 @@ export default function Footer() {
             <ul className="space-y-2 font-mono-code text-xs font-semibold">
               <li>
                 <a
-                  href="https://github.com/noah254634"
+                  href={profile?.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[var(--text-primary)] hover:text-[var(--accent-gold)] flex items-center gap-1 group transition-colors"
@@ -95,7 +72,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="https://www.linkedin.com/in/noah-khaemba/"
+                  href={profile?.linkedinUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[var(--text-primary)] hover:text-[var(--accent-gold)] flex items-center gap-1 group transition-colors"
@@ -106,7 +83,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:noahkhaemba290@gmail.com"
+                  href={`mailto:${profile?.email}`}
                   className="text-[var(--text-primary)] hover:text-[var(--accent-gold)] flex items-center gap-1 group transition-colors"
                 >
                   <span>Direct Email</span>
@@ -121,10 +98,10 @@ export default function Footer() {
         {/* Bottom Copyright Row */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs font-mono-code text-[var(--text-muted)] gap-3">
           <div>
-            © {new Date().getFullYear()} Noah Khaemba. All rights reserved.
+            © {new Date().getFullYear()} {profile?.fullName}. All rights reserved.
           </div>
           <div>
-            Nairobi, Kenya • UTC+3
+            {profile?.availability}
           </div>
         </div>
 

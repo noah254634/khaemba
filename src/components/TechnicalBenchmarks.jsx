@@ -1,33 +1,27 @@
-import React from 'react';
-import { Activity, Cpu, Zap } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Activity } from 'lucide-react';
+import { fetchProjects } from '../services/api';
 
 export default function TechnicalBenchmarks() {
-  const benchmarks = [
-    {
-      metric: '142ms P99 SLA',
-      title: 'VeraPay Multi-Rail Ledger',
-      description:
-        'Idempotent double-entry accounting ledger committed to PostgreSQL before triggering external payment rails across 14 currencies.',
-      tags: ['Go', 'Kafka', 'PostgreSQL', 'Redis'],
-      icon: Zap,
-    },
-    {
-      metric: '11.8ms Inference',
-      title: 'HaptiCare Edge Wearable',
-      description:
-        'Quantised INT8 TensorFlow Lite model running on ESP32-S3 microcontroller vector processing unit for offline-first vital sign analysis.',
-      tags: ['C++', 'TFLite INT8', 'ESP32-S3', 'BLE'],
-      icon: Cpu,
-    },
-    {
-      metric: '2M+ Evts/Sec',
-      title: 'Distributed Event Stream',
-      description:
-        'Stateful stream processing engine built on Kafka and Apache Flink with native exactly-once RocksDB state checkpointing to S3.',
-      tags: ['Java', 'Apache Flink', 'Kafka', 'Prometheus'],
-      icon: Activity,
-    },
-  ];
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const loadBenchmarks = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await fetchProjects();
+      setProjects(data.filter((project) => project.metrics?.length));
+    } catch (requestError) {
+      console.error('Error fetching benchmarks:', requestError);
+      setError('Benchmark data could not be loaded right now.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { loadBenchmarks(); }, []);
 
   return (
     <section className="py-20 sm:py-28 lg:py-36 border-b border-[var(--border-color)]">
@@ -49,43 +43,43 @@ export default function TechnicalBenchmarks() {
         </div>
 
         {/* Benchmarks Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {benchmarks.map((b, idx) => {
-            const Icon = b.icon;
+        {loading ? <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">{[1, 2, 3].map((item) => <div key={item} className="h-64 rounded-2xl bg-[var(--badge-bg)] animate-pulse" />)}</div> : error ? <div className="glass-card p-10 text-center"><p className="text-sm text-[var(--text-secondary)]">{error}</p><button type="button" onClick={loadBenchmarks} className="btn-agency-secondary mt-5">Try Again</button></div> : projects.length === 0 ? <div className="glass-card p-10 text-center"><p className="text-sm text-[var(--text-secondary)]">No benchmark data is available yet.</p></div> : <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          {projects.map((project) => {
+            const metric = project.metrics[0];
             return (
               <div
-                key={idx}
+                key={project._id || project.slug}
                 className="glass-card p-6 sm:p-8 xl:p-10 flex flex-col justify-between space-y-6 hover:border-[var(--accent-gold)] transition-all duration-300"
               >
                 <div className="space-y-4">
                   {/* Icon & Metric */}
                   <div className="flex items-center justify-between">
                     <span className="font-mono-code text-2xl font-bold text-[var(--accent-gold)]">
-                      {b.metric}
+                      {metric.value} {metric.label}
                     </span>
                     <div className="p-2.5 rounded-xl border border-[var(--border-color)] bg-[var(--badge-bg)]">
-                      <Icon className="w-5 h-5 text-[var(--accent-gold)]" />
+                      <Activity className="w-5 h-5 text-[var(--accent-gold)]" />
                     </div>
                   </div>
 
                   {/* Title & Description */}
                   <h3 className="font-sans-title text-xl font-bold text-[var(--text-primary)]">
-                    {b.title}
+                    {project.title}
                   </h3>
 
                   <p className="text-sm text-[var(--text-secondary)] font-normal leading-relaxed">
-                    {b.description}
+                    {project.description}
                   </p>
                 </div>
 
                 {/* Tech Pills */}
                 <div className="pt-4 border-t border-[var(--border-color)] flex flex-wrap gap-1.5 font-mono-code text-[11px]">
-                  {b.tags.map((tag, tIdx) => (
+                  {project.stack?.map((tag, tIdx) => (
                     <span
                       key={tIdx}
                       className="px-2.5 py-0.5 rounded bg-[var(--badge-bg)] text-[var(--text-primary)] border border-[var(--border-color)]"
                     >
-                      {tag}
+                        {typeof tag === 'object' ? tag.name : tag}
                     </span>
                   ))}
                 </div>
@@ -93,7 +87,7 @@ export default function TechnicalBenchmarks() {
               </div>
             );
           })}
-        </div>
+        </div>}
 
       </div>
     </section>
