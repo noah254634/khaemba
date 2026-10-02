@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import ParticleCanvas from './components/ParticleCanvas';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -13,6 +13,15 @@ import ProjectDetail from './pages/ProjectDetail';
 import { ProfileProvider } from './context/ProfileContext';
 import Seo, { DEFAULT_DESCRIPTION } from './components/Seo';
 import { useProfile } from './context/ProfileContext';
+import { useAnalyticsTracker } from './services/analytics';
+
+function AnalyticsTracker() {
+  const location = useLocation();
+  useEffect(() => {
+    return useAnalyticsTracker(location.pathname);
+  }, [location.pathname]);
+  return null;
+}
 
 function HomePage({ isDark, setIsDark }) {
   const { profile } = useProfile();
@@ -98,6 +107,7 @@ export default function App() {
 
   return (
     <ProfileProvider>
+      <AnalyticsTracker />
       <Routes>
         <Route path="/" element={<HomePage isDark={isDark} setIsDark={setIsDark} />} />
         <Route path="/projects/:slug" element={<ProjectDetail />} />
