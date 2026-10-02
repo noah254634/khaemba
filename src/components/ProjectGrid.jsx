@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchProjects } from '../services/api';
 import { ArrowUpRight } from 'lucide-react';
+import OptimizedImage from './OptimizedImage';
 
 const topologyMap = {
   verapay: '/assets/verapay-topology.svg',
@@ -96,7 +97,7 @@ export default function ProjectGrid({ onSelectProject }) {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 sm:gap-10 xl:gap-10">
-            {filteredProjects.map((project) => {
+            {filteredProjects.map((project, index) => {
               const svgPath = topologyMap[project.slug] || '/assets/event-stream-topology.svg';
               const previewSrc = project.heroImage || svgPath;
 
@@ -109,9 +110,10 @@ export default function ProjectGrid({ onSelectProject }) {
                   
                   {/* Top 4:3 Framed Preview Media with Top-Left Badge Overlay */}
                   <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden bg-[#0B0C10] flex items-center justify-center">
-                    <img
+                    <OptimizedImage
                       src={previewSrc}
                       alt={`${project.title} architecture`}
+                      priority={index < 2}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 max-h-[320px]"
                     />
                     

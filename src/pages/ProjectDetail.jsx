@@ -9,6 +9,7 @@ import {
   ArrowLeft, ExternalLink, GitBranch, Cpu,
   Image as ImageIcon, Tag, CheckCircle2, ChevronRight, ChevronLeft
 } from 'lucide-react';
+import OptimizedImage from '../components/OptimizedImage';
 
 const topologyMap = {
   verapay: '/assets/verapay-topology.svg',
@@ -245,10 +246,11 @@ export default function ProjectDetail() {
             <div className="lg:col-span-5">
               <div className="glass-card p-4 rounded-3xl overflow-hidden border border-[var(--border-strong)] bg-[#0B0C10] shadow-2xl">
                 <div className="aspect-[4/3] w-full flex items-center justify-center p-4 overflow-hidden rounded-2xl">
-                  <img
+                  <OptimizedImage
                     src={project.heroImage || svgPath}
                     alt={`${project.title} architecture diagram`}
-                    className="w-full h-full object-cover max-h-[360px] rounded-xl"
+                    priority={true}
+                    className="w-full h-full max-h-[360px] rounded-xl"
                   />
                 </div>
                 <div className="p-4 bg-[var(--bg-card)] border-t border-[var(--border-color)] flex items-center justify-between">
@@ -319,12 +321,14 @@ export default function ProjectDetail() {
               {selectedPhoto && (
                 <div className="glass-card rounded-3xl overflow-hidden border border-[var(--border-strong)] shadow-2xl space-y-4">
                   <div className="relative bg-black/80 aspect-video max-h-[520px] flex items-center justify-center p-4">
-                    <img
+                    <OptimizedImage
                       src={selectedPhoto.url}
                       alt={selectedPhoto.description}
-                      className="max-h-[480px] w-full object-contain rounded-xl"
+                      priority={true}
+                      objectFit="object-contain"
+                      className="max-h-[480px] w-full rounded-xl"
                     />
-                    <div className="absolute top-4 left-4">
+                    <div className="absolute top-4 left-4 z-20">
                       <span className="badge-glass bg-black/70 backdrop-blur-md text-white border-white/20">
                         <Tag className="w-3 h-3 inline mr-1 text-[var(--accent-gold)]" />
                         {selectedPhoto.role || 'screenshot'}
@@ -356,12 +360,12 @@ export default function ProjectDetail() {
                           : 'border-[var(--border-color)] opacity-70 hover:opacity-100 hover:border-[var(--border-strong)]'
                       }`}
                     >
-                      <img
+                      <OptimizedImage
                         src={img.url}
                         alt={img.description}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full"
                       />
-                      <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors" />
+                      <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors z-20" />
                     </button>
                   ))}
                 </div>

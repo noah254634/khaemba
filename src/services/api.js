@@ -46,6 +46,16 @@ export const fetchProjectDecisions = async (slug) => {
   return response.data?.data || response.data || [];
 };
 
+export const fetchGlobalDecisions = async () => {
+  try {
+    const response = await API.get('/decisions');
+    return response.data?.data || response.data || [];
+  } catch (err) {
+    console.error('Error fetching global decisions:', err);
+    return [];
+  }
+};
+
 export const fetchProjectImages = async (slug) => {
   try {
     const response = await API.get(`/projects/${slug}/images`);

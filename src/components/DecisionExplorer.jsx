@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Cpu, CheckCircle2, AlertTriangle } from 'lucide-react';
-import { fetchProjectDecisions, fetchProjects } from '../services/api';
+import { fetchGlobalDecisions, fetchProjectDecisions, fetchProjects } from '../services/api';
 
 export default function DecisionExplorer() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -9,21 +9,28 @@ export default function DecisionExplorer() {
   const [error, setError] = useState(null);
 
   const loadDecisions = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-      const projects = await fetchProjects();
-      const decisionGroups = await Promise.all(projects.map(async (project) => {
-        const decisions = await fetchProjectDecisions(project.slug);
-        return decisions.map((decision) => ({ ...decision, project: project.title }));
-      }));
-      setFeaturedDecisions(decisionGroups.flat());
-      } catch (requestError) {
-        console.error('Error fetching decisions:', requestError);
-        setError('Decision records could not be loaded right now.');
-      } finally {
-        setLoading(false);
+    setLoading(true);
+    setError(null);
+    try {
+      const globalDecisions = await fetchGlobalDecisions();
+      if (globalDecisions && globalDecisions.length > 0) {
+        setFeaturedDecisions(globalDecisions);
+      } else {
+        const projects = await fetchProjects();
+        const decisionGroups = await Promise.all(
+          projects.map(async (project) => {
+            const decisions = await fetchProjectDecisions(project.slug);
+            return decisions.map((decision) => ({ ...decision, project: project.title }));
+          })
+        );
+        setFeaturedDecisions(decisionGroups.flat());
       }
+    } catch (requestError) {
+      console.error('Error fetching decisions:', requestError);
+      setError('Decision records could not be loaded right now.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => { loadDecisions(); }, []);

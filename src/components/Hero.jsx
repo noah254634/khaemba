@@ -2,6 +2,8 @@ import React from 'react';
 import { Download, ArrowUpRight, Layers } from 'lucide-react';
 import { useProfile } from '../context/ProfileContext';
 
+import OptimizedImage from './OptimizedImage';
+
 export default function Hero() {
   const { profile, loading, error, retry } = useProfile();
 
@@ -80,12 +82,12 @@ export default function Hero() {
               
               {/* Image Container with Top Positioning to Prevent Head Cropping */}
               <div className="relative aspect-[4/5] sm:aspect-[4/5] max-h-[520px] w-full rounded-xl overflow-hidden bg-[var(--bg-card-hover)] flex items-center justify-center">
-                <img
-                  src={avatarUrl}
+                <OptimizedImage
+                  src={avatarUrl?.includes('.png') ? avatarUrl.replace('.png', '.webp') : avatarUrl}
                   alt={`${fullName} — ${title}`}
+                  priority={true}
                   className="w-full h-full object-cover object-top grayscale contrast-105 group-hover:scale-[1.02] transition-transform duration-500"
                 />
-                
               </div>
 
               {/* Bottom Caption Metadata (Responsive Layout for Multiple Languages & Small Devices) */}

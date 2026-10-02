@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { X, ExternalLink, GitBranch, Cpu, Image as ImageIcon, Eye, Tag } from 'lucide-react';
 import { fetchProjectDecisions, fetchProjectImages } from '../services/api';
+import OptimizedImage from './OptimizedImage';
 
 export default function ProjectModal({ project, onClose }) {
   const [decisions, setDecisions] = useState([]);
@@ -153,12 +154,14 @@ export default function ProjectModal({ project, onClose }) {
               {selectedPhoto && (
                 <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] overflow-hidden shadow-lg space-y-4">
                   <div className="relative bg-black/60 aspect-video max-h-[420px] flex items-center justify-center overflow-hidden">
-                    <img
+                    <OptimizedImage
                       src={selectedPhoto.url}
                       alt={selectedPhoto.description}
-                      className="w-full h-full object-contain"
+                      priority={true}
+                      objectFit="object-contain"
+                      className="w-full h-full"
                     />
-                    <div className="absolute top-4 left-4">
+                    <div className="absolute top-4 left-4 z-20">
                       <span className="badge-glass bg-black/60 backdrop-blur-md text-white border-white/20">
                         <Tag className="w-3 h-3 inline mr-1 text-[var(--accent-gold)]" />
                         {selectedPhoto.role || 'screenshot'}
@@ -190,12 +193,12 @@ export default function ProjectModal({ project, onClose }) {
                           : 'border-[var(--border-color)] opacity-70 hover:opacity-100 hover:border-[var(--border-strong)]'
                       }`}
                     >
-                      <img
+                      <OptimizedImage
                         src={img.url}
                         alt={img.description}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full"
                       />
-                      <div className="absolute inset-0 bg-black/30 group-hover:bg-transparent transition-colors" />
+                      <div className="absolute inset-0 bg-black/30 group-hover:bg-transparent transition-colors z-20" />
                     </button>
                   ))}
                 </div>
